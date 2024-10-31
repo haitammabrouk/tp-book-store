@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="output.css">
+</head>
+<body class="bg-gray-100 p-5 font-mono mt-16">
+
+    <h1 class="text-3xl text-center font-mono font-semibold text-[#4c5486]">Welcome to The Book Store</h1>
+
+    <div class="mb-5">
+        <h2 class="text-2xl font-bold text-[#4c5486]">Global Stats</h2>
+        <p id="totalBooks" class="text-lg">Total Books Read: 0</p>
+        <p id="totalPages" class="text-lg">Total Pages Read: 0</p>
+    </div>
+
+    <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+        <thead>
+            <tr class="bg-[#dcf1ff] text-black">
+                <th class="py-2 px-4 border-b">Title</th>
+                <th class="py-2 px-4 border-b">Author</th>
+                <th class="py-2 px-4 border-b">Total Pages</th>
+                <th class="py-2 px-4 border-b">Pages Read</th>
+                <th class="py-2 px-4 border-b">Percentage Read</th>
+            </tr>
+        </thead>
+        <tbody id="bookTableBody">
+
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchBooks() {
+            try {
+                const response = await axios.get('http://localhost:5000/api/books');
+                const books = response.data;
+                populateBookTable(books);
+                updateGlobalStats(books);
+            } catch (error) {
+                console.error('Error fetching books:', error);
+            }
+        }
+
+        function populateBookTable(books) {
+            const tableBody = document.getElementById('bookTableBody');
+            tableBody.innerHTML = ''; 
+
+            books.forEach(book => {
+                const { title, author, nbrOfPages, pagesRead } = book;
+
+                const safeNbrOfPages = nbrOfPages || 0; 
+                const safePagesRead = pagesRead || 0; 
+
+                const percentageRead = safeNbrOfPages > 0 ? ((safePagesRead / safeNbrOfPages) * 100).toFixed(2) : 0;
+
+                const row = `
+                    <tr class="text-center">
+                        <td class="py-2 px-4 border-b">${title}</td>
+                        <td class="py-2 px-4 border-b">${author}</td>
+                        <td class="py-2 px-4 border-b">${safeNbrOfPages}</td>
+                        <td class="py-2 px-4 border-b">${safePagesRead}</td>
+                        <td class="py-2 px-4 border-b">${percentageRead}%</td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+        function updateGlobalStats(books) {
+            const totalBooksRead = books.length;
+            console.log('Total books fetched:', totalBooksRead);
+
+            let totalPagesRead = 0;
+            books.forEach(book => {
+                const pages = book.pagesRead || 0;
+                console.log(`Book: ${book.title}, Pages Read: ${pages}`);
+                totalPagesRead += pages;
+            });
+
+            console.log('Total Pages Read:', totalPagesRead);
+
+            document.getElementById('totalBooks').innerText = `Total Books Read: ${totalBooksRead}`;
+            document.getElementById('totalPages').innerText = `Total Pages Read: ${totalPagesRead}`;
+        }
+        fetchBooks();
+    </script>
+
+</body>
+</html>

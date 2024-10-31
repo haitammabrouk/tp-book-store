@@ -1,0 +1,28 @@
+{
+  "name": "tp-book-store",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "npm run build && node ./output/backend/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/mongoose": "^5.11.97",
+    "tailwindcss": "^3.4.14"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "mongoose": "^8.8.0"
+  }
+}

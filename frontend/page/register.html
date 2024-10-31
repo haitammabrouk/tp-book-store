@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store</title>
+    <link rel="stylesheet" href="output.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class="mt-16">
+    <h1 class="text-3xl text-center font-mono font-semibold text-[#4c5486]">Welcome to The Book Store</h1>
+    <div class="book-form-container flex justify-center mt-5">
+        <form id="bookForm" class="px-6 py-5 w-form rounded-md shadow-lg font-mono bg-[#dcf1ff] ">
+            <div class="flex justify-between items-start">
+                <div class="first-section">
+                    <div class="mb-5">
+                        <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                        <input type="text" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                    </div>
+                    <div class="mb-5">
+                        <label for="author" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Author</label>
+                        <input type="text" id="author" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                    </div>
+                    <div class="mb-5">
+                        <label for="nbrOfPages" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Number of Pages</label>
+                        <input min="0" type="number" id="nbrOfPages" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                    </div>
+                    <div class="mb-5">
+                        <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
+                        <select id="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option>Read</option>
+                            <option>Re-read</option>
+                            <option>DNF</option>
+                            <option>Currently reading</option>
+                            <option>Returned Unread</option>
+                            <option>Want to read</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="second-section">
+                    <div class="mb-5">
+                        <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
+                        <input type="text" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                    </div>
+                    <div class="mb-5">
+                        <label for="pagesRead" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pages Read</label>
+                        <input min="0" type="number" id="pagesRead" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                    </div>
+                    <div class="mb-5">
+                        <label for="format" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Format</label>
+                        <select id="format" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option>Print</option>
+                            <option>PDF</option>
+                            <option>Ebook</option>
+                            <option>AudioBook</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-start mb-5">
+            <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add Book</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('bookForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    
+    const bookData = {
+        title: document.getElementById('title').value,
+        author: document.getElementById('author').value,
+        nbrOfPages: parseInt(document.getElementById('nbrOfPages').value), 
+        status: document.getElementById('status').value,
+        price: parseFloat(document.getElementById('price').value),
+        pagesRead: parseInt(document.getElementById('pagesRead').value),
+        format: document.getElementById('format').value,
+        finished: parseInt(document.getElementById('nbrOfPages').value) === parseInt(document.getElementById('pagesRead').value),
+    };
+
+    try {
+        const response = await fetch('http://localhost:5000/api/books', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(bookData),
+        });
+
+        if (response.ok) {
+            const savedBook = await response.json();
+            console.log('Book registered successfully:', savedBook);
+            document.getElementById('bookForm').reset();
+        } else {
+            console.error('Error registering book:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
+    </script>  
+</body>
+</html>

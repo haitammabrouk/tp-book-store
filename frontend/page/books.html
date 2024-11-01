@@ -50,9 +50,9 @@
             tableBody.innerHTML = ''; 
 
             books.forEach(book => {
-                const { title, author, nbrOfPages, pagesRead } = book;
+                const { title, author, pages, pagesRead } = book;
 
-                const safeNbrOfPages = nbrOfPages || 0; 
+                const safeNbrOfPages = pages || 0; 
                 const safePagesRead = pagesRead || 0; 
 
                 const percentageRead = safeNbrOfPages > 0 ? ((safePagesRead / safeNbrOfPages) * 100).toFixed(2) : 0;
@@ -77,7 +77,7 @@
             let totalPagesRead = 0;
             books.forEach(book => {
                 const pages = book.pagesRead || 0;
-                console.log(`Book: ${book.title}, Pages Read: ${pages}`);
+                console.log(`Book: ${book.title}, Pages Read: ${pages} and Total amount of pages is ${book.pages}`);
                 totalPagesRead += pages;
             });
 
